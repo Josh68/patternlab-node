@@ -25,7 +25,7 @@ function build() {
 
 function serve() {
   return patternlab
-    .serve({
+    .server.serve({
       cleanPublic: config.cleanPublic,
     })
     .then(() => {

@@ -36,7 +36,7 @@ let fs = require('fs-extra'); // eslint-disable-line
 let ui_builder = require('./lib/ui_builder'); // eslint-disable-line
 let copier = require('./lib/copier'); // eslint-disable-line
 let pattern_exporter = new pe(); // eslint-disable-line
-let serve = require('./lib/serve'); // eslint-disable-line
+let serverModule = require('./lib/server'); // eslint-disable-line
 
 const lineage_hunter = new lh();
 
@@ -419,12 +419,20 @@ const patternlab_module = function(config) {
      * @param {bool} options.watch **ALWAYS OVERRIDDEN to `true`** whether or not Pattern Lab should watch configured `source/` directories for changes to rebuild
      * @returns {Promise} a promise fulfilled when build is complete
      */
-    serve: function(options) {
-      options.watch = true;
-      return this.build(options).then(function() {
-        serve(patternlab);
-        return Promise.resolve();
-      });
+    server: {
+      serve: function(options) {
+        options.watch = true;
+        return this.build(options).then(function () {
+          serverModule.serve(patternlab);
+          return Promise.resolve();
+        });
+      },
+      reload: function() {
+        return serverModule.reload(); //TODO - will this work, or does the promise need to be setup here?
+      },
+      refreshCSS: function() {
+        return serverModule.refreshCSS(); //TODO - see above
+      }
     },
 
     events: patternlab.events,

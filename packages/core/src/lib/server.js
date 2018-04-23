@@ -5,8 +5,20 @@ const liveServer = require('@pattern-lab/live-server');
 const events = require('./events');
 const logger = require('./log');
 
+// initialize serverReady outside of the serve method
+
+let serverReady = false;
+
+// this would be a private init to manage stuff for all exposed module methods
+const getServerReady = () => serverReady;
+const setServerReady = (bool) => {
+  serverReady = bool;
+}
+
 const serve = patternlab => {
-  let serverReady = false;
+  //externalize the serverReady flag
+  //let serverReady = false;
+  setServerReady(false);
 
   // our default liveserver config
   const defaults = {
@@ -28,7 +40,7 @@ const serve = patternlab => {
 
   // watch for asset changes, and reload appropriately
   patternlab.events.on(events.PATTERNLAB_PATTERN_ASSET_CHANGE, data => {
-    if (serverReady) {
+    if (getServerReady()) {
       if (data.file.indexOf('css') > -1) {
         liveServer.refreshCSS();
       } else {
@@ -39,7 +51,7 @@ const serve = patternlab => {
 
   //watch for pattern changes, and reload
   patternlab.events.on(events.PATTERNLAB_PATTERN_CHANGE, () => {
-    if (serverReady) {
+    if (getServerReady()) {
       liveServer.reload();
     }
   });
@@ -52,8 +64,29 @@ const serve = patternlab => {
         liveServerConfig.port
       }`
     );
-    serverReady = true;
+    setServerReady(true);
   }, liveServerConfig.wait);
 };
 
-module.exports = serve;
+const reload = () => {
+  if (getServerReady()) {
+    liveServer.reload();
+    return Promise.resolve('Server reloaded');
+  }
+  return Promise.reject('Cannot reload because server is not ready');
+};
+
+const refreshCSS = () => {
+  if (getServerReady()) {
+    liveServer.refreshCSS();
+    return Promise.resolve('CSS refreshed');
+  }
+  return Promise.reject('Cannot reload because server is not ready');
+};
+
+//expose as 'server' module with methods serve, reload, and refreshCSS
+module.exports = {
+  serve,
+  reload,
+  refreshCSS
+};
