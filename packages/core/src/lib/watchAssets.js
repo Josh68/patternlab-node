@@ -22,7 +22,7 @@ const watchAssets = (
   watchOnce
 ) => {
   const assetBase = path.resolve(basePath, dir.source);
-  const assetsToIgnore = patternlab.config.transformedAssetTypes.join('|');
+  const assetsToIgnore = patternlab.config.transformedAssetTypes ? patternlab.config.transformedAssetTypes.join('|') : '';
   logger.debug(`Pattern Lab is watching ${assetBase} for changes`);
 
   if (patternlab.watchers[key]) {
