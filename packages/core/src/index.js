@@ -288,6 +288,41 @@ const patternlab_module = function(config) {
       return patternlab.getVersion();
     },
 
+    buildFrontend: function(options, patternlab, calledFromBuild:false) {
+      if (!calledFromBuild) {
+        if (patternlab && patternlab.isBusy) {
+          logger.info(
+            'Pattern Lab is busy building a previous run - returning early.'
+          );
+          return Promise.resolve();
+        }
+        patternlab.isBusy = true;
+      }
+      return new ui_builder().buildFrontend(patternlab).then(() => {
+        copier()
+          .copyAndWatch(patternlab.config.paths, patternlab, options)
+          .then(() => {
+            this.events.once(events.PATTERNLAB_PATTERN_CHANGE, () => {
+              if (!patternlab.isBusy) {
+                return this.build(options);
+              }
+              return Promise.resolve();
+            });
+
+            this.events.once(events.PATTERNLAB_GLOBAL_CHANGE, () => {
+              if (!patternlab.isBusy) {
+                return this.build(
+                  Object.assign({}, options, { cleanPublic: true }) // rebuild everything
+                );
+              }
+              return Promise.resolve();
+            });
+
+            patternlab.isBusy = false;
+          });
+      });
+    },
+
     /**
      * Builds patterns, copies assets, and constructs user interface
      *
@@ -306,29 +341,7 @@ const patternlab_module = function(config) {
       }
       patternlab.isBusy = true;
       return buildPatterns(options.cleanPublic, options.data).then(() => {
-        return new ui_builder().buildFrontend(patternlab).then(() => {
-          copier()
-            .copyAndWatch(patternlab.config.paths, patternlab, options)
-            .then(() => {
-              this.events.once(events.PATTERNLAB_PATTERN_CHANGE, () => {
-                if (!patternlab.isBusy) {
-                  return this.build(options);
-                }
-                return Promise.resolve();
-              });
-
-              this.events.once(events.PATTERNLAB_GLOBAL_CHANGE, () => {
-                if (!patternlab.isBusy) {
-                  return this.build(
-                    Object.assign({}, options, { cleanPublic: true }) // rebuild everything
-                  );
-                }
-                return Promise.resolve();
-              });
-
-              patternlab.isBusy = false;
-            });
-        });
+        return this.buildFrontend(options, patternlab, true);
       });
     },
 
