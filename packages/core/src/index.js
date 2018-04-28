@@ -12,7 +12,7 @@
 
 const packageInfo = require('../package.json');
 
-const { concat } = require('lodash');
+const { concat, cloneDeep, merge } = require('lodash');
 const copy = require('recursive-copy');
 const path = require('path');
 const updateNotifier = require('update-notifier');
@@ -288,8 +288,8 @@ const patternlab_module = function(config) {
       return patternlab.getVersion();
     },
 
-    buildFrontend: function(options, patternlab, calledFromBuild:false) {
-      if (!calledFromBuild) {
+    buildFrontend: function(options) {
+      if (!options.calledFromBuild) {
         if (patternlab && patternlab.isBusy) {
           logger.info(
             'Pattern Lab is busy building a previous run - returning early.'
@@ -341,7 +341,9 @@ const patternlab_module = function(config) {
       }
       patternlab.isBusy = true;
       return buildPatterns(options.cleanPublic, options.data).then(() => {
-        return this.buildFrontend(options, patternlab, true);
+        return this.buildFrontend(merge(cloneDeep(options), {
+          calledFromBuild: true
+        }));
       });
     },
 
