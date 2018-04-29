@@ -1,7 +1,66 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/compare/v3.0.0-alpha.8...v3.0.0) (2018-04-29)
+
+
+### Bug Fixes
+
+* **changes_hunter:** guard for incrementalRebuild while watching ([c652b9c](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/c652b9c)), closes [#794](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/issues/794) [#802](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/issues/802)
+* **config:** Add npm registry to lerna config ([1473cd5](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/1473cd5))
+* **config:** update patch to uikit files ([5ccd0d2](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/5ccd0d2))
+* **CONTRIBUTING:** Update contribution guidelines ([b7ee1b4](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/b7ee1b4))
+* **core:** Fix tests ([31d67a7](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/31d67a7))
+* **data_loader:** look for exact name of the file passed in ([eb46be2](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/eb46be2))
+* **engine-twig:** Fix package name ([58f7ec1](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/58f7ec1))
+* **get:** add internal ability to omit missing pattern warning ([e3dddc6](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/e3dddc6)), closes [#786](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/issues/786)
+* **lint:** run code through prettier ([ca52fde](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/ca52fde)), closes [#825](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/issues/825)
+* **package:** clarify description of package ([c65611e](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/c65611e))
+* **package:** fix scoped package name ([6e30e6e](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/6e30e6e))
+* **package:** Regenerate package.lock and upgrade patternlab-node ([93ec49e](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/93ec49e))
+* **package:** remove files obsoleted by monorepo ([9abb8ac](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/9abb8ac))
+* **package:** update LICENSE ([337aa32](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/337aa32))
+* **packages:** Allow scoped publishing ([58beeb6](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/58beeb6))
+* **polyfill:** Remove classList reference ([f0978da](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/f0978da))
+* **prettier:** add precommit and prettier commands ([aead343](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/aead343))
+* **prettier:** Attempt to ignore package files ([e6c08bf](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/e6c08bf))
+* **prettier:** fix prettierignore paths ([a0f752c](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/a0f752c))
+* **README:** fix scoped package name ([a4e82de](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/a4e82de))
+* **README:** Fix typos ([b3d1846](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/b3d1846))
+* **README:** update content for consistency ([4edf0d4](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/4edf0d4)), closes [#815](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/issues/815)
+* **README:** update installation command ([026e810](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/026e810))
+* **README:** Update shield & install instructions to point to scoped pkg ([f9bc085](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/f9bc085))
+* **styleguide:** port ishConfig hotfix ([8343f18](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/8343f18))
+* **tests:** exclude tests from code coverage ([288ccaa](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/288ccaa))
+* **tests:** Revert annotations file back to expected legacy format ([3618f27](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/3618f27))
+* **tests:** Revert annotations file back to expected legacy format ([653f021](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/653f021))
+* **tests:** Revert annotations file back to expected legacy format ([7313683](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/7313683))
+* **travis:** Add global lerna install during CI ([1fea333](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/1fea333))
+
+
+### Features
+
+* **cli:** Rename package ([9ea40d4](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/9ea40d4))
+* **config:** update StaleBot labels, timeouts, and messaging ([ddd6d12](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/ddd6d12))
+* **core:** Add tests for help command ([62cd8fb](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/62cd8fb))
+* **engine:** Add work from upstream ([5f9bae8](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/5f9bae8))
+* **engine:** Return a promise from render ([aa868b7](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/aa868b7))
+* **engine:** Support async render ([b40be85](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/b40be85))
+* **engine:** Support async render ([19f969b](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/19f969b))
+* **package:** Add bower as an explicit dependency ([c070b80](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/c070b80))
+* **package:** add engine-nunjucks to monorepo ([bf527ed](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/bf527ed)), closes [#814](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/issues/814)
+* **package:** Hoist up tap and test command. ([6cacdb6](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/6cacdb6))
+* **package:** standardize and hoist common devDependencies ([7f4ce6f](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/7f4ce6f))
+* **package:** The initial merge of styleguidekit-assets-default and styleguidekit-mustache-default ([9ec911e](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/9ec911e))
+* **package:** Update guidelines and templates ([604c958](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/604c958))
+* **packages:** Update all package.json repo and bug links ([5eb2c11](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/5eb2c11))
+* **README:** Update for brevity and consistency ([aec7c50](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/aec7c50))
+* **README:** Update for brevity and consistency ([a7f6866](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/a7f6866))
+* **README:** Update for brevity and consistency ([65a2969](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/commit/65a2969))
+
+
 
 <a name="3.0.0-alpha.11"></a>
 # [3.0.0-alpha.11](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core/compare/@pattern-lab/core@3.0.0-alpha.10...@pattern-lab/core@3.0.0-alpha.11) (2018-03-21)
