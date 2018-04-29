@@ -56,16 +56,25 @@ const serve = patternlab => {
     }
   });
 
-  //start!
-  setTimeout(() => {
-    liveServer.start(liveServerConfig);
-    logger.info(
-      `Pattern Lab is being served from http://127.0.0.1:${
-        liveServerConfig.port
-      }`
-    );
-    setServerReady(true);
-  }, liveServerConfig.wait);
+  return new Promise((resolve, reject) => {
+    //start!
+    setTimeout(() => {
+      try {
+        liveServer.start(liveServerConfig);
+        logger.info(
+          `Pattern Lab is being served from http://127.0.0.1:${
+            liveServerConfig.port
+          }`
+        );
+        setServerReady(true);
+        resolve('Server started!');
+      } catch (e) {
+        reject(e);
+      }
+    }, liveServerConfig.wait);
+  })
+    .then(result => console.log(result))
+    .catch(error => console.error(`Server failed to start: ${error}`));
 };
 
 const reload = () => {

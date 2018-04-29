@@ -439,7 +439,6 @@ const patternlab_module = function(config) {
       return {
         serve: function(options) {
           options.watch = true;
-          console.log(module);
           return module.build(options).then(function () {
             serverModule.serve(patternlab);
             return Promise.resolve();
