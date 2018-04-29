@@ -434,20 +434,24 @@ const patternlab_module = function(config) {
      * @param {bool} options.watch **ALWAYS OVERRIDDEN to `true`** whether or not Pattern Lab should watch configured `source/` directories for changes to rebuild
      * @returns {Promise} a promise fulfilled when build is complete
      */
-    server: {
-      serve: function(options) {
-        options.watch = true;
-        return this.build(options).then(function () {
-          serverModule.serve(patternlab);
-          return Promise.resolve();
-        });
-      },
-      reload: function() {
-        return serverModule.reload(); //TODO - will this work, or does the promise need to be setup here?
-      },
-      refreshCSS: function() {
-        return serverModule.refreshCSS(); //TODO - see above
-      }
+    server: function() {
+      const module = this;
+      return {
+        serve: function(options) {
+          options.watch = true;
+          console.log(module);
+          return module.build(options).then(function () {
+            serverModule.serve(patternlab);
+            return Promise.resolve();
+          });
+        },
+        reload: function() {
+          return serverModule.reload(); //TODO - will this work, or does the promise need to be setup here?
+        },
+        refreshCSS: function() {
+          return serverModule.refreshCSS(); //TODO - see above
+        }
+      };
     },
 
     events: patternlab.events,
