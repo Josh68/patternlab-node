@@ -439,10 +439,11 @@ const patternlab_module = function(config) {
       return {
         serve: function(options) {
           options.watch = true;
-          return module.build(options).then(function () {
-            serverModule.serve(patternlab);
-            return Promise.resolve();
-          });
+          return module.build(options)
+            .then(() => serverModule.serve(patternlab))
+            .catch(e =>
+              console.log(`error inside core index.js server serve: ${e}`)
+            );
         },
         reload: function() {
           return serverModule.reload(); //TODO - will this work, or does the promise need to be setup here?

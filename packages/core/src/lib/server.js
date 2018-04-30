@@ -72,9 +72,7 @@ const serve = patternlab => {
         reject(e);
       }
     }, liveServerConfig.wait);
-  })
-    .then(result => console.log(result))
-    .catch(error => console.error(`Server failed to start: ${error}`));
+  });
 };
 
 const reload = () => {
