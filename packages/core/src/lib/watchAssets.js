@@ -22,7 +22,9 @@ const watchAssets = (
   watchOnce
 ) => {
   const assetBase = path.resolve(basePath, dir.source);
-  const assetsToIgnore = patternlab.config.transformedAssetTypes ? patternlab.config.transformedAssetTypes.join('|') : '';
+  const assetsToIgnore = patternlab.config.transformedAssetTypes
+    ? patternlab.config.transformedAssetTypes.join('|')
+    : '';
   logger.debug(`Pattern Lab is watching ${assetBase} for changes`);
 
   if (patternlab.watchers[key]) {
@@ -33,8 +35,11 @@ const watchAssets = (
     // regex string escapes backslashes for JS
     // second part of regex is holdover from existing ignore regex for '/index.html' and other
     // files meant to be ignored, not based on file type
-    ignored: new RegExp(`(?:(?:.*\\.(?:${assetsToIgnore})$)|(?:(^|[\\/\\\\])\\..))`, 'i'),
-    //ignored: /(^|[\/\\])\../, //old version
+    // ignored: new RegExp(
+    //   `(?:(?:.*\\.(?:${assetsToIgnore})$)|(?:(^|[\\/\\\\])\\..))`,
+    //   'i'
+    // ),
+    // ignored: /(^|[\/\\])\../, //old version
     ignoreInitial: false,
     awaitWriteFinish: {
       stabilityThreshold: 200,

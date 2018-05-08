@@ -58,6 +58,8 @@ const copier = () => {
     const copyPromises = [];
 
     _.each(dirs, (dir, key) => {
+      console.log('dir');
+      console.log(dir);
       //if we want to watch files, do so, otherwise just copy each file
       if (options.watch) {
         watchAssets(patternlab, basePath, dir, key, copyOptions);

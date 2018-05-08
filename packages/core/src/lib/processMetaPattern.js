@@ -17,6 +17,7 @@ module.exports = function(fileName, metaType, patternlab) {
   metaPattern.isMetaPattern = true;
   return decompose(metaPattern, patternlab, true)
     .then(() => {
+      logger.info(`patternlab metaType ${metaType} being set to ${metaPattern}`);
       patternlab[metaType] = metaPattern;
     })
     .catch(reason => {

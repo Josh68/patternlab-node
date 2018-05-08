@@ -12,7 +12,7 @@
 
 const packageInfo = require('../package.json');
 
-const { concat, cloneDeep, merge } = require('lodash');
+const { concat } = require('lodash');
 const copy = require('recursive-copy');
 const path = require('path');
 const updateNotifier = require('update-notifier');
@@ -269,7 +269,7 @@ const patternlab_module = function(config) {
     });
   }
 
-  return {
+  const _module = {
     /**
      * Logs current version to standard output
      *
@@ -288,41 +288,6 @@ const patternlab_module = function(config) {
       return patternlab.getVersion();
     },
 
-    buildFrontend: function(options) {
-      if (!options.calledFromBuild) {
-        if (patternlab && patternlab.isBusy) {
-          logger.info(
-            'Pattern Lab is busy building a previous run - returning early.'
-          );
-          return Promise.resolve();
-        }
-        patternlab.isBusy = true;
-      }
-      return new ui_builder().buildFrontend(patternlab).then(() => {
-        copier()
-          .copyAndWatch(patternlab.config.paths, patternlab, options)
-          .then(() => {
-            this.events.once(events.PATTERNLAB_PATTERN_CHANGE, () => {
-              if (!patternlab.isBusy) {
-                return this.build(options);
-              }
-              return Promise.resolve();
-            });
-
-            this.events.once(events.PATTERNLAB_GLOBAL_CHANGE, () => {
-              if (!patternlab.isBusy) {
-                return this.build(
-                  Object.assign({}, options, { cleanPublic: true }) // rebuild everything
-                );
-              }
-              return Promise.resolve();
-            });
-
-            patternlab.isBusy = false;
-          });
-      });
-    },
-
     /**
      * Builds patterns, copies assets, and constructs user interface
      *
@@ -333,6 +298,14 @@ const patternlab_module = function(config) {
      * @returns {Promise} a promise fulfilled when build is complete
      */
     build: function(options) {
+      // process.on('unhandledRejection', (reason, p) => {
+      //   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+      //   // application specific logging, throwing an error, or other logic here
+
+      //   console.log(reason.stack);
+      //   debugger;
+      // });
+
       if (patternlab && patternlab.isBusy) {
         logger.info(
           'Pattern Lab is busy building a previous run - returning early.'
@@ -340,11 +313,43 @@ const patternlab_module = function(config) {
         return Promise.resolve();
       }
       patternlab.isBusy = true;
-      return buildPatterns(options.cleanPublic, options.data).then(() => {
-        return this.buildFrontend(merge(cloneDeep(options), {
-          calledFromBuild: true
-        }));
-      });
+
+      return buildPatterns(options.cleanPublic, patternlab, options.data).then(
+        () => {
+          return new ui_builder().buildFrontend(patternlab).then(() => {
+            copier()
+              .copyAndWatch(patternlab.config.paths, patternlab, options)
+              .then(() => {
+                patternlab.isBusy = false;
+                if (
+                  !this.events.listenerCount(events.PATTERNLAB_PATTERN_CHANGE)
+                ) {
+                  this.events.on(events.PATTERNLAB_PATTERN_CHANGE, () => {
+                    if (!patternlab.isBusy) {
+                      return this.build(options).then(() => {
+                        patternlab.isBusy = false;
+                      });
+                    }
+                    return Promise.resolve();
+                  });
+                }
+
+                if (
+                  !this.events.listenerCount(events.PATTERNLAB_GLOBAL_CHANGE)
+                ) {
+                  this.events.on(events.PATTERNLAB_GLOBAL_CHANGE, () => {
+                    if (!patternlab.isBusy) {
+                      return this.build(
+                        Object.assign({}, options, { cleanPublic: true }) // rebuild everything
+                      );
+                    }
+                    return Promise.resolve();
+                  });
+                }
+              });
+          });
+        }
+      );
     },
 
     /**
@@ -434,28 +439,29 @@ const patternlab_module = function(config) {
      * @param {bool} options.watch **ALWAYS OVERRIDDEN to `true`** whether or not Pattern Lab should watch configured `source/` directories for changes to rebuild
      * @returns {Promise} a promise fulfilled when build is complete
      */
-    server: function() {
-      const module = this;
-      return {
-        serve: function(options) {
-          options.watch = true;
-          return module.build(options)
-            .then(() => serverModule.serve(patternlab))
-            .catch(e =>
-              console.log(`error inside core index.js server serve: ${e}`)
-            );
-        },
-        reload: function() {
-          return serverModule.reload(); //TODO - will this work, or does the promise need to be setup here?
-        },
-        refreshCSS: function() {
-          return serverModule.refreshCSS(); //TODO - see above
-        }
-      };
+    server: {
+      serve: function(options) {
+        options.watch = true;
+        return _module
+          .build(options)
+          .then(() => serverModule.serve(patternlab))
+          .then(() => Promise.resolve())
+          .catch(e =>
+            logger.error(`error inside core index.js server serve: ${e}`)
+          );
+      },
+      reload: function() {
+        return serverModule.reload(); //TODO - will this work, or does the promise need to be setup here?
+      },
+      refreshCSS: function() {
+        return serverModule.refreshCSS(); //TODO - see above
+      },
     },
 
     events: patternlab.events,
   };
+
+  return _module;
 };
 
 patternlab_module.getDefaultConfig = getDefaultConfig;

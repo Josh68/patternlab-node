@@ -76,24 +76,28 @@ const serve = patternlab => {
 };
 
 const reload = () => {
-  if (getServerReady()) {
+  return new Promise((resolve, reject) => {
+    if (!getServerReady()) {
+      reject('Cannot reload because server is not ready');
+    }
     liveServer.reload();
-    return Promise.resolve('Server reloaded');
-  }
-  return Promise.reject('Cannot reload because server is not ready');
+    resolve('Server reloaded');
+  });
 };
 
 const refreshCSS = () => {
-  if (getServerReady()) {
+  return new Promise((resolve, reject) => {
+    if (!getServerReady()){
+      reject('Cannot reload because server is not ready');
+    }
     liveServer.refreshCSS();
-    return Promise.resolve('CSS refreshed');
-  }
-  return Promise.reject('Cannot reload because server is not ready');
+    resolve('CSS refreshed');
+  });
 };
 
 //expose as 'server' module with methods serve, reload, and refreshCSS
 module.exports = {
   serve,
   reload,
-  refreshCSS
+  refreshCSS,
 };
