@@ -25,7 +25,7 @@ let fs = require('fs-extra'); // eslint-disable-line
 let ui_builder = require('./lib/ui_builder'); // eslint-disable-line
 let copier = require('./lib/copier'); // eslint-disable-line
 let pattern_exporter = new pe(); // eslint-disable-line
-let serve = require('./lib/serve'); // eslint-disable-line
+let server = require('./lib/server'); // eslint-disable-line
 
 //bootstrap update notifier
 updateNotifier({
@@ -38,7 +38,7 @@ updateNotifier({
  *
  * @return {object} Returns the object representation of the `patternlab-config.json`
  */
-const getDefaultConfig = function() {
+const getDefaultConfig = function () {
   return defaultConfig;
 };
 
@@ -47,21 +47,22 @@ const getDefaultConfig = function() {
  *
  * @returns {string} current patternlab-node version as defined in `package.json`, as string
  */
-const getVersion = function() {
+const getVersion = function () {
   return packageInfo.version;
 };
 
-const patternlab_module = function(config) {
+const patternlab_module = function (config) {
   const PatternLabClass = require('./lib/patternlab');
   const patternlab = new PatternLabClass(config);
+  server = server(patternlab);
 
-  return {
+  const _module = {
     /**
      * Returns current version
      *
      * @returns {string} current patternlab-node version as defined in `package.json`, as string
      */
-    version: function() {
+    version: function () {
       return patternlab.getVersion();
     },
 
@@ -74,7 +75,7 @@ const patternlab_module = function(config) {
      * @param {bool} options.watch whether or not Pattern Lab should watch configured `source/` directories for changes to rebuild
      * @returns {Promise} a promise fulfilled when build is complete
      */
-    build: function(options) {
+    build: function (options) {
       // process.on('unhandledRejection', (reason, p) => {
       //   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
       //   // application specific logging, throwing an error, or other logic here
@@ -134,7 +135,7 @@ const patternlab_module = function(config) {
      *
      * @return {object} Returns the object representation of the `patternlab-config.json`
      */
-    getDefaultConfig: function() {
+    getDefaultConfig: function () {
       return getDefaultConfig();
     },
 
@@ -143,7 +144,7 @@ const patternlab_module = function(config) {
      *
      * @returns {Array<string>} all supported file extensions
      */
-    getSupportedTemplateExtensions: function() {
+    getSupportedTemplateExtensions: function () {
       return patternlab.getSupportedTemplateExtensions();
     },
 
@@ -152,7 +153,7 @@ const patternlab_module = function(config) {
      *
      * @returns {void} Pattern Lab API usage, as console output
      */
-    help: function() {
+    help: function () {
       logger.info(help(patternlab.package.version));
     },
 
@@ -162,7 +163,7 @@ const patternlab_module = function(config) {
      * @param {string} pluginName name of plugin
      * @returns {void}
      */
-    installplugin: function(pluginName) {
+    installplugin: function (pluginName) {
       patternlab.installPlugin(pluginName);
     },
 
@@ -171,7 +172,7 @@ const patternlab_module = function(config) {
      *
      * @returns {Promise} Returns an Array<{name,url}> for the starterkit repos
      */
-    liststarterkits: function() {
+    liststarterkits: function () {
       return patternlab.listStarterkits();
     },
 
@@ -182,7 +183,7 @@ const patternlab_module = function(config) {
      * @param {boolean} clean whether or not to delete contents of source/ before load
      * @returns {void}
      */
-    loadstarterkit: function(starterkitName, clean) {
+    loadstarterkit: function (starterkitName, clean) {
       patternlab.loadStarterKit(starterkitName, clean);
     },
 
@@ -194,7 +195,7 @@ const patternlab_module = function(config) {
      * @param {object} options.data additional data to be merged with global data prior to build
      * @returns {Promise} a promise fulfilled when build is complete
      */
-    patternsonly: function(options) {
+    patternsonly: function (options) {
       if (patternlab && patternlab.isBusy) {
         logger.info(
           'Pattern Lab is busy building a previous run - returning early.'
@@ -218,16 +219,19 @@ const patternlab_module = function(config) {
      * @param {bool} options.watch **ALWAYS OVERRIDDEN to `true`** whether or not Pattern Lab should watch configured `source/` directories for changes to rebuild
      * @returns {Promise} a promise fulfilled when build is complete
      */
-    serve: function(options) {
-      options.watch = true;
-      return this.build(options).then(function() {
-        serve(patternlab);
-        return Promise.resolve();
-      });
+    server: {
+      serve: options => {
+        options.watch = true;
+        return _module.build(options).then(() => server.serve());
+        //return Promise.resolve();
+      },
+      reload: server.reload,
+      refreshCSS: server.refreshCSS,
     },
 
     events: patternlab.events,
   };
+  return _module;
 };
 
 patternlab_module.getDefaultConfig = getDefaultConfig;

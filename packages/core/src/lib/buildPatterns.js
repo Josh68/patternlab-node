@@ -23,7 +23,6 @@ let fs = require('fs-extra'); // eslint-disable-line
 let ui_builder = require('./ui_builder'); // eslint-disable-line
 let copier = require('./copier'); // eslint-disable-line
 let pattern_exporter = new pe(); // eslint-disable-line
-let serve = require('./serve'); // eslint-disable-line
 
 const lineage_hunter = new lh();
 
