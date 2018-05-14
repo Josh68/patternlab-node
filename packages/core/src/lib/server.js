@@ -91,12 +91,19 @@ const server = patternlab => {
       return Promise.all(servers);
     },
     reload: data => {
+      const _data = data || {
+        file: '',
+        action: '',
+      };
       return new Promise((resolve, reject) => {
         let action;
         try {
           const reloadInterval = setInterval(() => {
             if (!patternlab.isBusy) {
-              if (data.file.indexOf('css') > -1 || data.action === 'refresh') {
+              if (
+                _data.file.indexOf('css') > -1 ||
+                _data.action === 'refresh'
+              ) {
                 action = 'refreshed CSS';
                 liveServer.refreshCSS();
               } else {
