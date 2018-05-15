@@ -4,6 +4,8 @@
     "packages/*"
   ],
   "version": "independent",
+  "useGitVersion": true,
+  "gitVersionPrefix": "v",
   "command": {
     "init": {
       "exact": true
